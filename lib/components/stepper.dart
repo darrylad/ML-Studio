@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graphical_model_interface/theme.dart';
 
 class Stepper extends StatelessWidget {
   final int totalSteps;
@@ -16,9 +17,9 @@ class Stepper extends StatelessWidget {
 
   Color _stepColor(int index) {
     if (index < currentStep) {
-      return Colors.green.shade700; // Completed steps
+      return Col.green; // Completed steps
     } else if (index == currentStep) {
-      return Colors.blue.shade800; // Current step
+      return Col.blue; // Current step
     } else {
       return Colors.white; // Upcoming steps
     }
@@ -34,6 +35,9 @@ class Stepper extends StatelessWidget {
             opacity: (currentStep > 1) ? 1 : 0,
             child: TextButton(
                 onPressed: (currentStep > 1) ? decrementStep : null,
+                style: ButtonStyle(
+                  foregroundColor: WidgetStateProperty.all<Color>(Col.blue),
+                ),
                 child: const Text("Previous"))),
         const SizedBox(width: 16),
         Column(
@@ -54,10 +58,11 @@ class Stepper extends StatelessWidget {
                         : const SizedBox(),
                     if (index < totalSteps - 1)
                       Container(
-                        width: 30,
+                        width: 30 + MediaQuery.of(context).size.width * 0.04,
                         height: 5,
-                        color: (index + 1 < currentStep)
-                            ? Colors.green.shade700
+                        color: (index + 1 < currentStep &&
+                                (!largeWidth || totalSteps < currentStep))
+                            ? Col.green
                             : Colors.white,
                       ),
                   ],
@@ -67,15 +72,21 @@ class Stepper extends StatelessWidget {
           ],
         ),
         const SizedBox(width: 16),
-        TextButton(onPressed: incrementStep, child: const Text("Next")),
+        TextButton(
+          onPressed: incrementStep,
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.all<Color>(Col.blue),
+          ),
+          child: const Text("Next"),
+        ),
       ],
     );
   }
 
   Container step(int index, Color color) {
     return Container(
-      height: 50,
-      width: 50,
+      height: 35,
+      width: 35,
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(150),

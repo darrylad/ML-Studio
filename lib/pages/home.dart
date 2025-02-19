@@ -16,7 +16,7 @@ class Home extends StatelessWidget {
                 const SizedBox(height: 100),
                 const Text("Models",
                     style:
-                        TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 16),
                 ListTile(
                   title: const Text('Create New'),

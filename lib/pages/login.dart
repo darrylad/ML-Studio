@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graphical_model_interface/pages/home.dart';
+import 'package:graphical_model_interface/theme.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -28,13 +29,19 @@ class Login extends StatelessWidget {
                   labelText: 'Password',
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => const Home()));
                 },
-                child: const Text('Login'),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Col.blue),
+                  elevation: WidgetStateProperty.all<double>(1),
+                ),
+                child: const Text(
+                  'Login',
+                ),
               ),
             ],
           ),

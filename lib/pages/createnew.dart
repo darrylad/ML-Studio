@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:graphical_model_interface/components/selector.dart';
 import 'package:graphical_model_interface/components/stepper.dart' as s;
+import 'package:graphical_model_interface/configs.dart';
 
 class CreateNew extends StatefulWidget {
   const CreateNew({super.key});
@@ -13,6 +15,8 @@ class _CreateNewState extends State<CreateNew> {
   int currentStep = 1;
 
   PageController pageController = PageController();
+
+  String? selectedModel;
 
   void incrementStep() {
     if (currentStep > totalSteps) {
@@ -57,10 +61,10 @@ class _CreateNewState extends State<CreateNew> {
       ),
       body: Column(
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: 26),
           const Text(
             'Create New',
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 32),
           s.Stepper(
@@ -70,29 +74,68 @@ class _CreateNewState extends State<CreateNew> {
             decrementStep: decrementStep,
           ),
           const SizedBox(height: 32),
-          Text('Step $currentStep'),
           Expanded(
             child: PageView(
               controller: pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                Container(
-                  color: Colors.red,
-                ),
-                Container(
-                  color: Colors.blue,
-                ),
-                Container(
-                  color: Colors.green,
-                ),
-                Container(
-                  color: Colors.yellow,
-                ),
-                Container(
-                  color: Colors.purple,
-                ),
+                page1(context),
+                page2(),
+                page3(context, models),
+                Container(),
+                Container(),
               ],
             ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Column page3(BuildContext context, List<String> models) {
+    return Column(
+      children: [
+        const Text("Select a model"),
+        const SizedBox(height: 16),
+        Expanded(
+            child: Selector(
+          selectors: models,
+          defaultSelector: modelConfig["selectedModel"],
+          onSelectionChanged: (newSelection) {
+            setState(() {
+              modelConfig["selectedModel"] = newSelection;
+            });
+          },
+        )),
+      ],
+    );
+  }
+
+  Column page2() {
+    return const Column(
+      children: [
+        Text("Labels"),
+      ],
+    );
+  }
+
+  SingleChildScrollView page1(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          Container(
+            height: 200,
+            width: 400 + MediaQuery.of(context).size.width * 0.1,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.grey.shade500, width: 3),
+            ),
+            child: Center(
+                child: Text(
+              "Drag input here",
+              style: TextStyle(color: Colors.grey.shade600),
+            )),
           )
         ],
       ),
