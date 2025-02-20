@@ -4,11 +4,36 @@ final List<String> models = [
   "InceptionV3",
   "MobileNetV3",
   "EfficientNet",
-  "InceptionV2"
 ];
 
+final List<String> loss = [
+  "sparse_categorical_crossentropy",
+  "categorical_crossentropy",
+  "binary_crossentropy",
+  "mean_squared_error",
+  "mean_absolute_error"
+];
+
+final List<String> optimizer = [
+  "adam",
+  "sgd",
+  "rmsprop",
+  "adagrad",
+  "adadelta"
+];
+
+double minEpochs = 1;
+double maxEpochs = 64;
+
+double minBatchSize = 1;
+double maxBatchSize = 64;
+
+int learningRate = 100;
+double minLearningRate = 1;
+double maxLearningRate = 1000;
+
 Map<String, dynamic> modelConfig = {
-  "models": models,
+  "models": models.map((model) => {"name": model}).toList(),
   "selectedModel": models[0],
   "epochs": 10,
   "batchSize": 32,

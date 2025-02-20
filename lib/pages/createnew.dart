@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:graphical_model_interface/components/multi_selector.dart';
 import 'package:graphical_model_interface/components/selector.dart';
+import 'package:graphical_model_interface/components/slider_theme.dart';
 import 'package:graphical_model_interface/components/stepper.dart' as s;
 import 'package:graphical_model_interface/configs.dart';
 
@@ -79,10 +81,10 @@ class _CreateNewState extends State<CreateNew> {
               controller: pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                page1(context),
-                page2(),
-                page3(context, models),
-                Container(),
+                inputPage(context),
+                labelPage(),
+                modelSelectionPage(context, models),
+                hyperParamsPage(),
                 Container(),
               ],
             ),
@@ -92,13 +94,128 @@ class _CreateNewState extends State<CreateNew> {
     );
   }
 
-  Column page3(BuildContext context, List<String> models) {
+  Padding hyperParamsPage() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          vertical: 8.0,
+          horizontal: 32 + MediaQuery.of(context).size.width * 0.1),
+      child: Column(
+        children: [
+          const Text(
+            "Hyperparameters",
+          ),
+          const SizedBox(height: 32),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Epochs"),
+                  Slider3D(
+                      min: minEpochs,
+                      max: maxEpochs,
+                      isInt: true,
+                      sliderValue: modelConfig["epochs"].toDouble(),
+                      onChanged: (value) {
+                        setState(() {
+                          modelConfig["epochs"] = value.toInt();
+                        });
+                      }),
+                  const SizedBox(height: 32),
+                  const Text("Batch Size"),
+                  Slider3D(
+                      min: minBatchSize,
+                      max: maxBatchSize,
+                      isInt: true,
+                      sliderValue: modelConfig["batchSize"].toDouble(),
+                      onChanged: (value) {
+                        setState(() {
+                          modelConfig["batchSize"] = value.toInt();
+                        });
+                      }),
+                  const SizedBox(height: 32),
+                  const Text("Learning Rate"),
+                  Slider3D(
+                      min: minLearningRate,
+                      max: maxLearningRate,
+                      isInt: false,
+                      sliderValue: learningRate.toDouble(),
+                      label: modelConfig["learningRate"],
+                      onChanged: (value) {
+                        setState(() {
+                          learningRate = value.toInt();
+                          modelConfig["learningRate"] =
+                              learningRate / maxLearningRate;
+                        });
+                      }),
+                  const SizedBox(height: 32),
+                  const Text("Optimizer"),
+                  Center(
+                    child: Selector(
+                      wide: true,
+                      selectors: optimizer,
+                      defaultSelector: modelConfig["optimizer"],
+                      onSelectionChanged: (newSelection) {
+                        setState(() {
+                          modelConfig["optimizer"] = newSelection;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  const Text("Loss"),
+                  Center(
+                    child: Selector(
+                      wide: true,
+                      selectors: loss,
+                      defaultSelector: modelConfig["loss"],
+                      onSelectionChanged: (newSelection) {
+                        setState(() {
+                          modelConfig["loss"] = newSelection;
+                        });
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  const Text("Metrics"),
+                  Wrap(
+                    children: modelConfig["metrics"]
+                        .map<Widget>((metric) => Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Chip(
+                                label: Text(metric),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 32),
+                  const Text("Augumentation"),
+                  Center(
+                    child: MultiSelector(
+                        options: const ['accuracy', 'precision', 'recall'],
+                        initialSelected: const ['accuracy'],
+                        onSelectionChanged: (newSelection) {
+                          setState(() {});
+                        }),
+                  ),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Column modelSelectionPage(BuildContext context, List<String> models) {
     return Column(
       children: [
         const Text("Select a model"),
         const SizedBox(height: 16),
         Expanded(
             child: Selector(
+          compact: false,
           selectors: models,
           defaultSelector: modelConfig["selectedModel"],
           onSelectionChanged: (newSelection) {
@@ -111,7 +228,7 @@ class _CreateNewState extends State<CreateNew> {
     );
   }
 
-  Column page2() {
+  Column labelPage() {
     return const Column(
       children: [
         Text("Labels"),
@@ -119,7 +236,7 @@ class _CreateNewState extends State<CreateNew> {
     );
   }
 
-  SingleChildScrollView page1(BuildContext context) {
+  SingleChildScrollView inputPage(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [

@@ -59,7 +59,7 @@ class Stepper extends StatelessWidget {
                     if (index < totalSteps - 1)
                       Container(
                         width: 30 + MediaQuery.of(context).size.width * 0.04,
-                        height: 5,
+                        height: 4,
                         color: (index + 1 < currentStep &&
                                 (!largeWidth || totalSteps < currentStep))
                             ? Col.green
